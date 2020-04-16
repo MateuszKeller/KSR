@@ -2,7 +2,6 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
-
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -25,15 +24,19 @@ public class Loader {
         for(int f = 0; f< amount; f++)
         {
             File file = new File("data/"+filesNames[f]);
+//            File file = new File("data/reut2-017.sgm");
             Article[] articlesWithinFile = parseFile(file);
             Collections.addAll(articles, articlesWithinFile);
 
-                {System.out.println(articlesWithinFile[articlesWithinFile.length-1].toString());}
+//                {System.out.println(articlesWithinFile[0].toString());}
+//                {System.out.println("----------------------------------------------");}
+//                {System.out.println(articlesWithinFile[articlesWithinFile.length-2].toString());}
         }
         return articles.toArray(new Article[0]);
     }
 
-    private static Article[] parseFile(File file) throws IOException {
+    private static Article[] parseFile(File file) throws IOException
+    {
         Scanner scanner = new Scanner(file).useDelimiter("\\A");
         String content;
         if(scanner.hasNext())
@@ -44,28 +47,50 @@ public class Loader {
         Document document = Jsoup.parse(content);
         Elements reuters = document.getElementsByTag("REUTERS");
 
-            {System.out.println(file.getName()+ ": " + reuters.size());}
-
-        Article[] articlesWithinFile = new Article[reuters.size()];
-
-        for (int e = 0; e < articlesWithinFile.length; e++)
+        ArrayList<Article> articlesWithinFile = new ArrayList<>();
+        for (Element element: reuters)
         {
-            Element element = reuters.get(e);
-
             Elements title = element.getElementsByTag("TITLE");
             Elements places = element.getElementsByTag("PLACES");
-            Elements body = element.getElementsByTag("CONTENT");
 
-            Elements places_items = places.select("D");
-            String[] places_names = new String[places_items.size()];
-            for (int i = 0; i < places_names.length; i++)
-                places_names[i] = places_items.get(i).text();
+            String body = element.getElementsByTag("CONTENT").text();
+            body = body.replace("&\\t", "\t");
 
-            Article article = new Article(title.text(), places_names, body.text());
-            articlesWithinFile[e] = article;
+            Elements placesElement = places.select("D");
+            String[] labels = new String[placesElement.size()];
+            for (int i = 0; i < labels.length; i++)
+                labels[i] = placesElement.get(i).text();
+
+            boolean matching = matchLabels(true, labels);
+            if (matching)
+            {
+                Article article = new Article(title.text(), labels, body);
+                articlesWithinFile.add(article);
+            }
+
+
         }
+            {System.out.println(file.getName()+ ": " + reuters.size() + "; Good: " + articlesWithinFile.size());}
+        return articlesWithinFile.toArray(new Article[0]);
+    }
 
-        return articlesWithinFile;
+    public static boolean matchLabels(boolean onlyProjectLabelsInPlaces, String[] places)
+    {
+        String[] labels = { "west-germany", "usa", "france", "uk", "canada", "japan"};
+        for (String place : places)
+        {
+            boolean good = false;
+            for (String label : labels)
+            {
+                if (label.equals(place))
+                    good = true;
+            }
+            if(!onlyProjectLabelsInPlaces)
+                return true;
+            if (!good)
+                return false;
+        }
+        return true;
     }
 
 }
