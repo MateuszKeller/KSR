@@ -8,15 +8,15 @@ public class Manager {
 
         Classification T = new Classification();
         T.fillRepository();
+        T.generateKeyWords();
 
         int i = 0;
 
         Article objT = T.getRepository().getArticles()[i];
-        System.out.println(objT);
-        System.out.println("------------------------------");
-        System.out.println(Arrays.toString(objT.getFirstVector()));
-        System.out.println(Arrays.toString(objT.getLastVector()));
-        System.out.println("------------------------------");
+        System.out.println("Article " + i+1 + ": " + objT);
+        System.out.println("KeyWords- " + T.getKeywords().length + ": "+ Arrays.toString(T.getKeywords()));
+
+
 
 
     }

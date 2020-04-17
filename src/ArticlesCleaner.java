@@ -1,6 +1,5 @@
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -20,7 +19,7 @@ public class ArticlesCleaner {
             words.add(scanner.nextLine());
 
         scanner.close();
-        stopWords = words.toArray(new String[0]);
+        stopWords = words.toArray(String[]::new);
     }
 
     public String[] getStopWords() {
@@ -55,7 +54,7 @@ public class ArticlesCleaner {
             if(!stops.contains(word))
                 ret.add(word);
         }
-        return ret.toArray(new String[0]);
+        return ret.toArray(String[]::new);
     }
 
 

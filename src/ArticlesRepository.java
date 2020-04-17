@@ -13,9 +13,7 @@ public class ArticlesRepository {
         filter();
         splitSets((float)learningPercent/100);
 
-        System.out.println(articles.length + " articles.");
-        System.out.println(learningArticles.length + " learning.");
-        System.out.println(testingArticles.length + " testing.");
+            System.out.println(articles.length + " articles.\n" + learningArticles.length + " learning.\n" + testingArticles.length + " testing.");
 
     }
 
@@ -69,11 +67,8 @@ public class ArticlesRepository {
         Article[] learning = new Article[learningSize];
         Article[] testing = new Article[testingSize];
 
-        for (int i = 0; i < learningSize; i++)
-            learning[i] = articles[i];
-
-        for (int i = 0; i < testingSize; i++)
-            testing[i] = articles[learningSize + i];
+        System.arraycopy(articles, 0, learning, 0, learningSize);
+        System.arraycopy(articles, learningSize, testing, 0, testingSize);
 
         learningArticles = learning;
         testingArticles = testing;

@@ -17,7 +17,7 @@ public class Loader {
 
     public static Article[]  loadFiles() throws Exception
     {
-        int amount = 22;
+        int amount = 1;
         List<Article> articles = new ArrayList<>();
         //if(amount < 1 || amount > 22){ System.out.println("ERR - wrong files amount!"); throw new Exception("wrong files amount!"); }
 
@@ -32,7 +32,7 @@ public class Loader {
 //                {System.out.println("----------------------------------------------");}
 //                {System.out.println(articlesWithinFile[articlesWithinFile.length-2].toString());}
         }
-        return articles.toArray(new Article[0]);
+        return articles.toArray(Article[]::new);
     }
 
     private static Article[] parseFile(File file) throws IOException
@@ -70,8 +70,8 @@ public class Loader {
 
 
         }
-            {System.out.println(file.getName()+ ": " + reuters.size() + "; Good: " + articlesWithinFile.size());}
-        return articlesWithinFile.toArray(new Article[0]);
+//            {System.out.println(file.getName()+ ": " + reuters.size() + "; Good: " + articlesWithinFile.size());}
+        return articlesWithinFile.toArray(Article[]::new);
     }
 
     public static boolean matchLabels(boolean onlyProjectLabelsInPlaces, String[] places)
