@@ -1,3 +1,7 @@
+package operations;
+
+import model.Article;
+
 import java.util.ArrayList;
 import java.util.List;
 

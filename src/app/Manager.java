@@ -1,3 +1,8 @@
+package app;
+
+import model.Article;
+import operations.Classification;
+
 import java.util.Arrays;
 
 public class Manager {
@@ -13,8 +18,8 @@ public class Manager {
         int i = 0;
 
         Article objT = T.getRepository().getArticles()[i];
-        System.out.println("Article " + i+1 + ": " + objT);
-        System.out.println("KeyWords- " + T.getKeywords().length + ": "+ Arrays.toString(T.getKeywords()));
+        System.out.println("model.Article " + i+1 + ": " + objT);
+        System.out.println("operations.KeyWords- " + T.getKeywords().length + ": "+ Arrays.toString(T.getKeywords()));
 
 
 

@@ -1,3 +1,6 @@
+package model;
+
+import utils.Loader;
 
 public class ArticlesRepository {
 

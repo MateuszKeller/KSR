@@ -1,3 +1,6 @@
+package operations;
+
+import model.ArticlesRepository;
 
 public class Classification {
 
