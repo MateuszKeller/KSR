@@ -5,7 +5,10 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -14,20 +17,21 @@ import java.util.Scanner;
 
 public class Loader {
 
+    private static int amount = 1;
     private static String[] filesNames = {"reut2-000.sgm", "reut2-001.sgm", "reut2-002.sgm", "reut2-003.sgm","reut2-004.sgm","reut2-005.sgm",
             "reut2-006.sgm", "reut2-007.sgm", "reut2-008.sgm", "reut2-009.sgm","reut2-010.sgm","reut2-011.sgm","reut2-012.sgm","reut2-013.sgm",
             "reut2-014.sgm", "reut2-015.sgm", "reut2-016.sgm", "reut2-017.sgm","reut2-018.sgm","reut2-019.sgm","reut2-020.sgm","reut2-021.sgm"};
 
     public static Article[]  loadFiles() throws Exception
     {
-        int amount = 1;
+
         List<Article> articles = new ArrayList<>();
         //if(amount < 1 || amount > 22){ System.out.println("ERR - wrong files amount!"); throw new Exception("wrong files amount!"); }
 
         for(int f = 0; f< amount; f++)
         {
             File file = new File("data/"+filesNames[f]);
-//            File file = new File("data/reut2-017.sgm");
+
             Article[] articlesWithinFile = parseFile(file);
             Collections.addAll(articles, articlesWithinFile);
 
@@ -94,6 +98,17 @@ public class Loader {
                 return false;
         }
         return true;
+    }
+
+    public static void saveKeyWords(String fileName, String[] keywords)
+    {
+        System.out.println("Saving key words.");
+
+    }
+
+    public static void loadKeyWords(String fileName, String[] keywords)
+    {
+        System.out.println("Loading key words.");
     }
 
 }

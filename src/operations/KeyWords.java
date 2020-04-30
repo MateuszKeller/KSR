@@ -30,7 +30,6 @@ public class KeyWords {
 
                             if(debug)System.out.println("KEYWORD: " + word.toUpperCase() + " in " + article.getTitle() + " [" + indexInVector + "]");
                     }
-
                 }
                     if(debug)indexInVector++;
             }
@@ -45,8 +44,8 @@ public class KeyWords {
                 }
                 i++;
             }
-
         }
+        
         return keyWords.toArray(String[]::new);
     }
 
