@@ -59,8 +59,8 @@ public class ArticlesRepository {
     private void stemize(Article article)
     {
         ArticlesCleaner.stem(article.getWordsVector());
-        ArticlesCleaner.stem(article.getFirstVector());
-        ArticlesCleaner.stem(article.getLastVector());
+        ArticlesCleaner.stem(article.getFirstParagraph());
+        ArticlesCleaner.stem(article.getLastParagraph());
     }
 
     private void splitSets(float learningPercent)

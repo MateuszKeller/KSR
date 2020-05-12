@@ -1,6 +1,9 @@
 package model;
 
+import features.Feature;
+
 import java.util.Arrays;
+import java.util.Map;
 
 public class Article {
 
@@ -12,9 +15,10 @@ public class Article {
     private int stopsAmount;
 
     private String[] wordsVector;
+    private Map<String, Feature> featuresVector;
 
-    private String[] firstVector;
-    private String[] lastVector;
+    private String[] firstParagraph;
+    private String[] lastParagraph;
 
     public Article(String title, String[] places, String body)
     {
@@ -33,14 +37,17 @@ public class Article {
     public void setWordsAmount() { this.wordsAmount = ArticlesCleaner.split(body).length; }
     public int getStopsAmount() { return stopsAmount; }
     public void setStopsAmount() { this.stopsAmount = wordsAmount-wordsVector.length; }
-    public String[] getFirstVector() { return firstVector; }
-    public String[] getLastVector() { return lastVector; }
-    public void setParagraphs() { this.firstVector = wordsVector; this.lastVector = wordsVector; }
-    public void setParagraphs(String[] firstVector, String[] lastVector)
+    public String[] getFirstParagraph() { return firstParagraph; }
+    public String[] getLastParagraph() { return lastParagraph; }
+    public void setParagraphs() { this.firstParagraph = wordsVector; this.lastParagraph = wordsVector; }
+    public void setParagraphs(String[] firstParagraph, String[] lastParagraph)
     {
-        this.firstVector = firstVector;
-        this.lastVector = lastVector;
+        this.firstParagraph = firstParagraph;
+        this.lastParagraph = lastParagraph;
     }
+
+    public Map<String, Feature> getFeaturesVector() { return featuresVector; }
+    public void setFeaturesVector(Map<String, Feature> featuresVector) { this.featuresVector = featuresVector; }
 
     public String toString()
     {
