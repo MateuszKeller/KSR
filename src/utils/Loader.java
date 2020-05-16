@@ -6,14 +6,9 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Scanner;
+import java.io.*;
+import java.lang.reflect.Array;
+import java.util.*;
 
 public class Loader {
 
@@ -103,12 +98,40 @@ public class Loader {
     public static void saveKeyWords(String fileName, String[] keywords)
     {
         System.out.println("Saving key words.");
+        ArrayList<String> list = new ArrayList<>(Arrays.asList(keywords));
 
+        try
+        {
+            FileWriter writer = new FileWriter(fileName);
+            for(String keyword: list)
+            {
+                writer.write(keyword + System.lineSeparator());
+            }
+            writer.close();
+
+        }
+        catch (IOException e) { e.printStackTrace(); }
     }
 
-    public static void loadKeyWords(String fileName, String[] keywords)
+    public static String[] loadKeyWords(String fileName)
     {
         System.out.println("Loading key words.");
+        List<String> ret = new ArrayList<String>();
+
+        try
+        {
+            Scanner s = new Scanner(new File(fileName));
+            while (s.hasNext())
+            {
+                ret.add(s.next());
+            }
+            s.close();
+
+        }
+        catch (FileNotFoundException e) { e.printStackTrace(); }
+
+        return ret.toArray(String[]::new);
+
     }
 
 }

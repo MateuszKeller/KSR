@@ -77,4 +77,21 @@ public class ArticlesRepository {
         testingArticles = testing;
     }
 
+    public int findMostWordsAfterStoplist()
+    {
+        int indexToReturn = 0;
+        int max = 0;
+        for(int i = 0; i < articles.length; i++)
+        {
+            int wordsAmount = articles[i].getWordsVector().length;
+            if(wordsAmount > max)
+            {
+                max=wordsAmount;
+                indexToReturn = i;
+            }
+        }
+
+        return indexToReturn;
+    }
+
 }

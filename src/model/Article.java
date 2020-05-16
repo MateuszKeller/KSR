@@ -55,7 +55,23 @@ public class Article {
                 " " + Arrays.toString(places) +
                 "\nBody: " + body +
                 "\nWords: " + wordsAmount + "; Stops: " + stopsAmount +
-                "\nVector: " + Arrays.toString(wordsVector);
+                "\nVector- " + wordsVector.length + " : " + Arrays.toString(wordsVector);
+
+        if (featuresVector!= null)
+                ret += "\nFeatures:\n" + printFeatures();
+
+        return ret;
+    }
+
+    public String printFeatures()
+    {
+        String ret = "";
+        for (Map.Entry<String, Feature> feature : featuresVector.entrySet())
+        {
+            if(feature!= null)
+            ret += "\t" + feature.getKey() + ": " + feature.getValue() + "\n";
+        }
+
         return ret;
     }
 

@@ -1,8 +1,6 @@
 package features;
 
 import model.Article;
-
-import java.lang.reflect.Array;
 import java.util.*;
 
 public class FeatureExtractor {
@@ -22,6 +20,9 @@ public class FeatureExtractor {
     public Map<String, Feature> getFeatures() {
         return featuresMap;
     }
+    public void setFeatures(Map<String, Feature> features) {
+        featuresMap = features;
+    }
 
     public void setKeywordsMap()
     {
@@ -36,6 +37,21 @@ public class FeatureExtractor {
             }
             keywordsMap.put(key, sum);
         }
+    }
+
+    public void extract(boolean[] whichFeatures)
+    {
+        if(whichFeatures[0]) keysInFirstPar();
+        if(whichFeatures[1]) keysInLastPar();
+        if(whichFeatures[2]) keysIn20();
+        if(whichFeatures[3]) uniqKeysIn50();
+        if(whichFeatures[4]) keysDensity();
+        if(whichFeatures[5]) lengthAfterStoplist();
+        if(whichFeatures[6]) deletedToAllRatio();
+        if(whichFeatures[7]) keysToLeftRatio();
+        if(whichFeatures[8]) firstKey();
+        if(whichFeatures[9]) mostCommonKey();
+
     }
 
     public int countKeywordsInText(String[] text)
@@ -77,7 +93,7 @@ public class FeatureExtractor {
     public void uniqKeysIn50()
     {
         int number = countKeywordsInText(article.getFirstParagraph());
-        featuresMap.put("Unique50%", new NumberFeature(number));
+        featuresMap.put("Unique_50%", new NumberFeature(number));
     }
 
     // 5. Density of Keywords
@@ -88,7 +104,27 @@ public class FeatureExtractor {
         featuresMap.put("Density", new NumberFeature(density));
     }
 
-    // 6. First Keyword
+    // 6. Amount of words in text (after stop list)
+    public void lengthAfterStoplist()
+    {
+        featuresMap.put("Length", new NumberFeature(article.getWordsVector().length));
+    }
+
+    // 7. Deleted words to text length ratio
+    public void deletedToAllRatio()
+    {
+        double number = article.getStopsAmount();
+        featuresMap.put("S/A_Ratio", new NumberFeature(number/ article.getWordsAmount()));
+    }
+
+    // 8. Number of keywords to number of words left after stoplist ratio
+    public void keysToLeftRatio()
+    {
+        double number =  countKeywordsInText(article.getWordsVector());
+        featuresMap.put("K/L_Ratio", new NumberFeature(number/ article.getWordsVector().length));
+    }
+
+    // 9. First Keyword
     public void firstKey()
     {
         ArrayList<String> listOfWords = new ArrayList<>(Arrays.asList(article.getWordsVector()));
@@ -105,7 +141,7 @@ public class FeatureExtractor {
 
     }
 
-    // 7. Most common Keyword in whole text
+    // 10. Most common Keyword in whole text
     public void mostCommonKey()
     {
         int amount = 0;
@@ -125,24 +161,41 @@ public class FeatureExtractor {
 
     }
 
-    // 8. Amount of words in text (after stop list)
-    public void lengthAfterStoplist()
-    {
-        featuresMap.put("Length", new NumberFeature(article.getWordsVector().length));
-    }
+    public void normalize() {
+        double sum = 0, mean = 0;
+        int count = 0;
+        for (Feature feature : featuresMap.values()) {
+            if (feature.getClass().equals(NumberFeature.class)) {
+                NumberFeature numberFeature = (NumberFeature) feature;
+                sum += numberFeature.getValue();
+                count++;
+            }
+        }
+        if (count > 0) {
+            mean = sum / (double)count;
+        }
 
-    // 9. Deleted words to text length ratio
-    public void deletedToAllRatio()
-    {
-        double number = article.getStopsAmount();
-        featuresMap.put("S/A_Ratio", new NumberFeature(number/ article.getWordsAmount()));
-    }
+        double dev_sum = 0, deviation = 0;
 
-    // 10. Number of keywords to text length ratio
-    public void keysToAllRatio()
-    {
-        double number =  countKeywordsInText(article.getWordsVector());
-        featuresMap.put("K/A_Ratio", new NumberFeature(number/ article.getWordsAmount()));
+        for (Feature feature : featuresMap.values()) {
+            if (feature.getClass().equals(NumberFeature.class)) {
+                NumberFeature numberFeature = (NumberFeature) feature;
+                double diff = (numberFeature.getValue() - mean);
+                dev_sum += diff * diff;
+            }
+        }
+
+        if (count > 0) {
+            deviation = Math.sqrt(dev_sum / (double) count);
+        }
+
+        for (Feature feature : featuresMap.values()) {
+            if (feature.getClass().equals(NumberFeature.class)) {
+                NumberFeature numberFeature = (NumberFeature) feature;
+                double normalized = (numberFeature.getValue() - mean) / deviation;
+                numberFeature.setValue(normalized);
+            }
+        }
     }
 
 }
