@@ -4,18 +4,23 @@ import features.Feature;
 import features.FeatureExtractor;
 import features.NumberFeature;
 import features.TextFeature;
+import metrics.Metric;
+import metrics.Street;
 import model.Article;
 import model.ArticlesRepository;
 import utils.Loader;
 
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
 public class Classification {
 
     private ArticlesRepository repository;
-    private String[] labels = { "west-germany", "usa", "france", "uk", "canada", "japan" };
+    private static String[] labels = { "west-germany", "usa", "france", "uk", "canada", "japan" };
     private String[] keywords;
+    private int k = 3;
+    private Metric metric = new Street();
     private double significance = 0.5;
     private int learningPercent = 90;
 
@@ -80,6 +85,46 @@ public class Classification {
             ret.put(key, minMax);
 
         }
+        return ret;
+    }
+
+    public void classify()
+    {
+        for (Article test: repository.getTestingArticles())
+        {
+            Article[] nearestNeighbours = kNN(test);
+        }
+
+    }
+
+    public Article[] kNN(Article articleForTesting)
+    {
+        Article[] ret = new Article[k];
+
+        Map<Article, Double> distances = new LinkedHashMap <>();
+        for (Article article: repository.getLearningArticles())
+        {
+            double d = metric.calcDistance(articleForTesting.getFeaturesVector(), article.getFeaturesVector());
+            distances.put(article, d);
+        }
+
+        Map<Article, Double> sorted = sortByDistance(distances);
+        int i = 0;
+        for (Map.Entry<Article, Double> entry: sorted.entrySet())
+        {
+            if(i == k + 1) return ret;
+
+            ret[i] = entry.getKey();
+            i++;
+        }
+
+        return ret;
+    }
+
+    private LinkedHashMap<Article, Double> sortByDistance(Map<Article, Double> mapToSort)
+    {
+        LinkedHashMap<Article, Double> ret = new LinkedHashMap<>();
+        mapToSort.entrySet().stream().sorted(Map.Entry.comparingByValue()).forEachOrdered(x -> ret.put(x.getKey(), x.getValue()));
         return ret;
     }
 

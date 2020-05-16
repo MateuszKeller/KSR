@@ -2,6 +2,7 @@ package app;
 
 import features.Feature;
 import features.NumberFeature;
+import metrics.Chebyshev;
 import model.Article;
 import operations.Classification;
 
