@@ -1,8 +1,17 @@
 package model;
 
 import metrics.Metric;
+import metrics.Street;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -104,14 +113,118 @@ public class Report {
 
     }
 
-    public void generateXLS(String[] labels, int k, Metric metric, double significance, int ratio)
+    public void generateXLS(String[] labels, int k, Metric metric, double significance, int ratio, boolean[] features)
     {
 
+        XSSFWorkbook workbook = new XSSFWorkbook();
+        XSSFSheet sheet = workbook.createSheet("Report");
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("HH_mm_ss");
+        LocalDateTime now = LocalDateTime.now();
+
+        String[] metricName = metric.getClass().getName().split("\\.");
+        String[] featuresNames = {"First_paragraph", "Last_paragraph", "First_20%", "Unique_50%", "Density", "Length", "S/A_Ratio", "K/L_Ratio", "First", "Most_Common"};
+
+        Row row = sheet.createRow(1); //-
+            Cell cell = row.createCell(1);
+            cell.setCellValue("Settings:");
+
+            cell = row.createCell(5);
+            cell.setCellValue("Results:");
+
+        row = sheet.createRow(2); //-
+            cell = row.createCell(1);
+            cell.setCellValue("K:");
+            cell = row.createCell(2);
+            cell.setCellValue(k);
+
+            cell = row.createCell(5);
+            cell.setCellValue("Correct:");
+            cell = row.createCell(6);
+            cell.setCellValue(trueAll);
+
+        row = sheet.createRow(3); //-
+            cell = row.createCell(1);
+            cell.setCellValue("Metric:");
+            cell = row.createCell(2);
+            cell.setCellValue(metricName[1]);
+
+            cell = row.createCell(5);
+            cell.setCellValue("Incorrect:");
+            cell = row.createCell(6);
+            cell.setCellValue(falseAll);
+
+        row = sheet.createRow(4); //-
+            cell = row.createCell(1);
+            cell.setCellValue("Signif:");
+            cell = row.createCell(2);
+            cell.setCellValue(significance);
+
+            cell = row.createCell(5);
+            cell.setCellValue("Accuracy:");
+            cell = row.createCell(6);
+            cell.setCellValue(accuracy);
+
+        row = sheet.createRow(5); //-
+            cell = row.createCell(1);
+            cell.setCellValue("Ratio:");
+            cell = row.createCell(2);
+            cell.setCellValue(ratio);
 
 
+        row = sheet.createRow(7); //-
+            cell = row.createCell(1);
+            cell.setCellValue("Features:");
+            for (int i = 0; i < features.length; i++)
+            {
+                row = sheet.createRow(8+i);
+                cell = row.createCell(1);
+                cell.setCellValue(featuresNames[i]);
+                cell = row.createCell(2);
+                cell.setCellValue(features[i]);
+            }
 
+            row = sheet.getRow(7);
+            cell = row.createCell(6);
+            cell.setCellValue("Precision");
+            cell = row.createCell(7);
+            cell.setCellValue("Recall");
 
+            for (int i = 0; i < labels.length; i++)
+            {
+                row = sheet.getRow(8+i);
+                cell = row.createCell(5);
+                cell.setCellValue(labels[i]);
+                cell = row.createCell(6);
+                cell.setCellValue(precision.get(labels[i]));
+                cell = row.createCell(7);
+                cell.setCellValue(recall.get(labels[i]));
+
+            }
+
+        for (int i = 0; i < 12; i++)
+            sheet.autoSizeColumn(i);
+
+//        Row row = sheet.createRow(1);
+//        Cell cell = row.createCell(2);
+//        cell.setCellValue("Results");
+//
+//        row = sheet.getRow(1);
+//        cell = row.createCell(5);
+//        cell.setCellValue("Results2");
+
+        try
+        {
+
+            String fileName = "Report_" + k + "_" + metricName[1] + "_" + ratio + "_" + dtf.format(now) + ".xlsx";
+            FileOutputStream out = new FileOutputStream(fileName);
+            workbook.write(out);
+            out.close();
+
+            workbook.close();
+        }
+        catch (IOException e) { e.printStackTrace(); }
     }
+
 
 
 }

@@ -21,7 +21,8 @@ public class Classification {
     private int k = 5;
     private Metric metric = new Street();
     private double significance = 0.5;
-    private int learningPercent = 60;
+    private int learningPercent = 95;
+    private boolean[] features;
 
     public ArticlesRepository getRepository() { return repository; }
     public String[] getKeywords() { return keywords; }
@@ -39,10 +40,11 @@ public class Classification {
 
     public void extractFeatures(boolean[] whichFeatures)
     {
+        features = whichFeatures;
         for(Article article: repository.getArticles())
         {
             FeatureExtractor extractor = new FeatureExtractor(article, keywords);
-            extractor.extract(whichFeatures);
+            extractor.extract(features);
             article.setFeaturesVector(extractor.getFeatures());
         }
     }
@@ -109,7 +111,7 @@ public class Classification {
         }
 
         report.setStatistics();
-        report.generateXLS(labels, k, metric, significance, learningPercent);
+        report.generateXLS(labels, k, metric, significance, learningPercent, features);
 
     }
 
