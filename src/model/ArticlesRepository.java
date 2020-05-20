@@ -16,7 +16,7 @@ public class ArticlesRepository {
         filter();
         splitSets((float)learningPercent/100);
 
-            System.out.println(articles.length + " articles.\n" + learningArticles.length + " learning.\n" + testingArticles.length + " testing.");
+            System.out.println(articles.length + " articles.\n" + learningArticles.length + " learning.\n" + testingArticles.length + " testing:");
 
     }
 
@@ -92,6 +92,24 @@ public class ArticlesRepository {
         }
 
         return indexToReturn;
+    }
+
+    public String numbersInSets(String[] labels)
+    {
+        StringBuilder ret = new StringBuilder();
+        for (String label: labels)
+            ret.append("\t").append(label).append(": ").append(numberInSet(label)).append("\n");
+
+        return ret.toString();
+    }
+
+    private String numberInSet(String label)
+    {
+        int count = 0;
+        for (Article article: testingArticles)
+            if(article.getPlaces()[0].equals(label)) count++;
+
+        return Integer.toString(count);
     }
 
 }

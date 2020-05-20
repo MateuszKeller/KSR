@@ -8,21 +8,20 @@ import metrics.Metric;
 import metrics.Street;
 import model.Article;
 import model.ArticlesRepository;
+import model.Report;
 import utils.Loader;
 
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.Map;
+import java.util.*;
 
 public class Classification {
 
     private ArticlesRepository repository;
     private static String[] labels = { "west-germany", "usa", "france", "uk", "canada", "japan" };
     private String[] keywords;
-    private int k = 3;
+    private int k = 5;
     private Metric metric = new Street();
     private double significance = 0.5;
-    private int learningPercent = 90;
+    private int learningPercent = 60;
 
     public ArticlesRepository getRepository() { return repository; }
     public String[] getKeywords() { return keywords; }
@@ -30,6 +29,7 @@ public class Classification {
     public void fillRepository() throws Exception
     {
         repository = new ArticlesRepository(learningPercent);
+        System.out.println(repository.numbersInSets(labels));
     }
 
     public void generateKeyWords()
@@ -90,10 +90,26 @@ public class Classification {
 
     public void classify()
     {
+        Report report = new Report(labels);
+
         for (Article test: repository.getTestingArticles())
         {
             Article[] nearestNeighbours = kNN(test);
+            String supposedLabel = selectLabel(nearestNeighbours);
+
+            if(test.checkLabel(supposedLabel))
+                report.addTrue();
+            else
+                report.addFalse();
+
+            if(test.getPlaces().length != 0)
+                report.addToMatrix(test.getPlaces()[0], supposedLabel);
+            else
+                System.out.println(test);
         }
+
+        report.setStatistics();
+        report.generateXLS(labels, k, metric, significance, learningPercent);
 
     }
 
@@ -112,7 +128,7 @@ public class Classification {
         int i = 0;
         for (Map.Entry<Article, Double> entry: sorted.entrySet())
         {
-            if(i == k + 1) return ret;
+            if(i == k) return ret;
 
             ret[i] = entry.getKey();
             i++;
@@ -125,6 +141,23 @@ public class Classification {
     {
         LinkedHashMap<Article, Double> ret = new LinkedHashMap<>();
         mapToSort.entrySet().stream().sorted(Map.Entry.comparingByValue()).forEachOrdered(x -> ret.put(x.getKey(), x.getValue()));
+        return ret;
+    }
+
+    private String selectLabel(Article[] nearestArticles)
+    {
+        String ret = "";
+        Map<String, Integer> labelsFound = new HashMap<>();
+        for (Article article: nearestArticles)
+        {
+            for (String place : article.getPlaces())
+            {
+                if (labelsFound.containsKey(place)) labelsFound.put(place, labelsFound.get(place)+1);
+                else labelsFound.put(place, 1);
+            }
+        }
+        ret = Collections.max(labelsFound.entrySet(), Comparator.comparingInt(Map.Entry::getValue)).getKey();
+
         return ret;
     }
 

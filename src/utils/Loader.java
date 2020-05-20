@@ -12,7 +12,7 @@ import java.util.*;
 
 public class Loader {
 
-    private static int amount = 1;
+    private static int amount = 22;
     private static String[] filesNames = {"reut2-000.sgm", "reut2-001.sgm", "reut2-002.sgm", "reut2-003.sgm","reut2-004.sgm","reut2-005.sgm",
             "reut2-006.sgm", "reut2-007.sgm", "reut2-008.sgm", "reut2-009.sgm","reut2-010.sgm","reut2-011.sgm","reut2-012.sgm","reut2-013.sgm",
             "reut2-014.sgm", "reut2-015.sgm", "reut2-016.sgm", "reut2-017.sgm","reut2-018.sgm","reut2-019.sgm","reut2-020.sgm","reut2-021.sgm"};
@@ -57,6 +57,7 @@ public class Loader {
 
             String body = element.getElementsByTag("CONTENT").text();
             body = body.replace("&\\t", "\t");
+//            if(body.length() < 3) continue;;
 
             Elements placesElement = places.select("D");
             String[] labels = new String[placesElement.size()];
@@ -78,6 +79,8 @@ public class Loader {
 
     public static boolean matchLabels(boolean onlyProjectLabelsInPlaces, String[] places)
     {
+        if(places.length == 0) return false;
+
         String[] labels = { "west-germany", "usa", "france", "uk", "canada", "japan"};
         for (String place : places)
         {

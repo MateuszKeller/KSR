@@ -100,6 +100,7 @@ public class FeatureExtractor {
     public void keysDensity()
     {
         double density = keywordsMap.values().stream().reduce(0, Integer::sum);
+
         density /= article.getWordsAmount();
         featuresMap.put("Density", new NumberFeature(density));
     }
@@ -159,43 +160,6 @@ public class FeatureExtractor {
 
         featuresMap.put("Most_Common", new TextFeature(mostCommon));
 
-    }
-
-    public void normalize() {
-        double sum = 0, mean = 0;
-        int count = 0;
-        for (Feature feature : featuresMap.values()) {
-            if (feature.getClass().equals(NumberFeature.class)) {
-                NumberFeature numberFeature = (NumberFeature) feature;
-                sum += numberFeature.getValue();
-                count++;
-            }
-        }
-        if (count > 0) {
-            mean = sum / (double)count;
-        }
-
-        double dev_sum = 0, deviation = 0;
-
-        for (Feature feature : featuresMap.values()) {
-            if (feature.getClass().equals(NumberFeature.class)) {
-                NumberFeature numberFeature = (NumberFeature) feature;
-                double diff = (numberFeature.getValue() - mean);
-                dev_sum += diff * diff;
-            }
-        }
-
-        if (count > 0) {
-            deviation = Math.sqrt(dev_sum / (double) count);
-        }
-
-        for (Feature feature : featuresMap.values()) {
-            if (feature.getClass().equals(NumberFeature.class)) {
-                NumberFeature numberFeature = (NumberFeature) feature;
-                double normalized = (numberFeature.getValue() - mean) / deviation;
-                numberFeature.setValue(normalized);
-            }
-        }
     }
 
 }

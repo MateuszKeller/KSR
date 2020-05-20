@@ -11,7 +11,6 @@ public class TextFeature implements Feature<String> {
     public String getValue() {
         return value;
     }
-//    public void setValue(String value) { this.value = value;}
 
     public double compare(Feature<String> feature) {
         return NGrams.similarity(getValue(), feature.getValue());

@@ -3,6 +3,7 @@ package model;
 import features.Feature;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
 public class Article {
@@ -48,6 +49,12 @@ public class Article {
 
     public Map<String, Feature> getFeaturesVector() { return featuresVector; }
     public void setFeaturesVector(Map<String, Feature> featuresVector) { this.featuresVector = featuresVector; }
+
+    public boolean checkLabel(String labelToCheck)
+    {
+        List<String> labels = Arrays.asList(places);
+        return labels.contains(labelToCheck);
+    }
 
     public String toString()
     {
