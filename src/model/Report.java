@@ -201,8 +201,43 @@ public class Report {
 
             }
 
+            row = sheet.getRow(7);
+            cell = row.createCell(9);
+            cell.setCellValue("Matrix");
+            int j = 10;
+            for (String label: labels)
+            {
+                cell = row.createCell(j);
+                cell.setCellValue(label);
+                j++;
+            }
+
+            int r = 8;
+
+            for (String label: labels)
+            {
+                j = 9;
+                row = sheet.getRow(r);
+                cell = row.createCell(j);
+                cell.setCellValue(label);
+                j++;
+
+                for (String l: labels)
+                {
+                    Integer value = confusionMatrix.get(label).get(l);
+                    cell = row.createCell(j);
+                    cell.setCellValue(value);
+                    j++;
+                }
+                r++;
+            }
+
+
+
         for (int i = 0; i < 12; i++)
             sheet.autoSizeColumn(i);
+
+
 
 //        Row row = sheet.createRow(1);
 //        Cell cell = row.createCell(2);
@@ -224,7 +259,5 @@ public class Report {
         }
         catch (IOException e) { e.printStackTrace(); }
     }
-
-
 
 }

@@ -9,6 +9,7 @@ import metrics.Street;
 import model.Article;
 import model.ArticlesRepository;
 import model.Report;
+import org.apache.poi.util.LittleEndianByteArrayInputStream;
 import utils.Loader;
 
 import java.util.*;
@@ -18,11 +19,18 @@ public class Classification {
     private ArticlesRepository repository;
     private static String[] labels = { "west-germany", "usa", "france", "uk", "canada", "japan" };
     private String[] keywords;
-    private int k = 5;
-    private Metric metric = new Street();
+    private int k;// = 5;
+    private Metric metric;// = new Street();
     private double significance = 0.5;
-    private int learningPercent = 95;
+    private int learningPercent;// = 95;
     private boolean[] features;
+
+    public Classification(int k, int learningPercent, Metric metric)
+    {
+        this.k = k;
+        this.learningPercent = learningPercent;
+        this.metric = metric;
+    }
 
     public ArticlesRepository getRepository() { return repository; }
     public String[] getKeywords() { return keywords; }
@@ -40,6 +48,7 @@ public class Classification {
 
     public void extractFeatures(boolean[] whichFeatures)
     {
+        System.out.println("Extraction");
         features = whichFeatures;
         for(Article article: repository.getArticles())
         {
@@ -51,6 +60,7 @@ public class Classification {
 
     public void normalize()
     {
+        System.out.println("Normalisation");
         Map<String, Double[]> minMax = findMinMax();
         for (Article article: repository.getArticles())
         {
@@ -92,6 +102,7 @@ public class Classification {
 
     public void classify()
     {
+        System.out.println("Classification");
         Report report = new Report(labels);
 
         for (Article test: repository.getTestingArticles())
@@ -110,6 +121,7 @@ public class Classification {
                 System.out.println(test);
         }
 
+        System.out.println("Statistics");
         report.setStatistics();
         report.generateXLS(labels, k, metric, significance, learningPercent, features);
 

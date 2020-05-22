@@ -52,8 +52,10 @@ public class Article {
 
     public boolean checkLabel(String labelToCheck)
     {
-        List<String> labels = Arrays.asList(places);
-        return labels.contains(labelToCheck);
+//        List<String> labels = Arrays.asList(places);
+//        return labels.contains(labelToCheck);
+
+        return labelToCheck.equals(places[0]);
     }
 
     public String toString()
