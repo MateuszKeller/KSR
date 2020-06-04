@@ -2,12 +2,10 @@ package app;
 
 import features.Feature;
 import features.NumberFeature;
-import metrics.Chebyshev;
-import metrics.Euclidean;
-import metrics.Metric;
-import metrics.Street;
+import metrics.*;
 import model.Article;
 import operations.Classification;
+import operations.NGrams;
 
 import java.util.Arrays;
 
@@ -18,23 +16,29 @@ public class Manager {
         System.out.println("Hello World");
 
         Classification classification;
-//        Metric[] metrics = {new Street(), new Chebyshev(), new Euclidean()};
-        Metric[] metrics = {new Chebyshev()};
-        boolean[] whichFeatures = {true, true, true, true, true, true, true, true, true, true};
-//        int[] a = {1,2,3,4,5,6,7,10,13,15};
-        int[] a = {1, 10};
-        int[] percent = {30,50,60,70,90};
+//        Metric[] metrics = {new Street(), new Chebyshev(), new Euclidean(), new Hamming()};
+        Metric[] metrics = {new Hamming()};
+        boolean[] whichFeatures1 = {true, true, true, true, true, true, true, true, false, false};
+        boolean[] whichFeatures2 = {true, true, true, true, true, false, false, false, true, true};
+        boolean[] whichFeatures3 = {false, false, false, false, true, true, true, true, true, true};
+        boolean[] whichFeatures4 = {false, false, true, true, true, false, false, false, false, true};
+        boolean[] all = {true, true, true, true, true, true, true, true, true, true};
+//        int[] k = {1,2,3,4,5,6,7,10,13,15};
+        int[] k = {2};
+        int[] percent = {50}; //50, 60, 70, 90
+        NGrams.setN(3);
 
         for (Metric metric: metrics)
         {
-            for (int i: a)
+            for (int i: k)
             {
                 for (int p: percent)
                 {
+//                    NGrams.setN(p);
                     classification = new Classification(i, p, metric);
-                    classification.load("keywords_0.5_" + p);
+                    classification.load("keywords_0.5_" + 50);
                     classification.fillRepository();
-                    classification.extractFeatures(whichFeatures);
+                    classification.extractFeatures(whichFeatures4);
                     classification.normalize();
                     classification.classify();
 

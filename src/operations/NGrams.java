@@ -4,7 +4,7 @@ public class NGrams {
 
     private static int n;
 
-    public void setN(int n) { NGrams.n = n; }
+    public static void setN(int n) { NGrams.n = n; }
 
     public static double similarity(String word1, String word2)
     {
