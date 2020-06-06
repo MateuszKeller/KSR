@@ -67,6 +67,23 @@ public class FeatureExtractor {
 
         return ret;
     }
+    public int countUniqueKeywordsInText(String[] text)
+    {
+        int ret = 0;
+        ArrayList<String> listOfWords = new ArrayList<>(Arrays.asList(text));
+        ArrayList<String> seen = new ArrayList<>();
+        for(String word: listOfWords)
+        {
+            if(keywords.contains(word))
+                if (!seen.contains(word))
+                {
+                    ret++;
+                    seen.add(word);
+                }
+        }
+
+        return ret;
+    }
 
     // 1. Number of Keywords in first paragraph
     public void keysInFirstPar()
@@ -78,21 +95,24 @@ public class FeatureExtractor {
     // 2. Number of Keywords in last paragraph
     public void keysInLastPar()
     {
-        int number = countKeywordsInText(article.getFirstParagraph());
+        int number = countKeywordsInText(article.getLastParagraph());
         featuresMap.put("Last_paragraph", new NumberFeature(number));
     }
 
     // 3. Number of Keywords in first 20 % of text
     public void keysIn20()
     {
-        int number = countKeywordsInText(article.getFirstParagraph());
+        int part =  (int)(article.getWordsVector().length*0.2);
+        String[] text = Arrays.copyOfRange(article.getWordsVector(), 0, part);
+        int number = countKeywordsInText(text);
         featuresMap.put("20%", new NumberFeature(number));
     }
 
     // 4. Number of unique Keywords in first 50 % of text
     public void uniqKeysIn50()
     {
-        int number = countKeywordsInText(article.getFirstParagraph());
+        String[] text = Arrays.copyOfRange(article.getWordsVector(), 0, article.getWordsVector().length/2);
+        int number = countUniqueKeywordsInText(text);
         featuresMap.put("Unique_50%", new NumberFeature(number));
     }
 

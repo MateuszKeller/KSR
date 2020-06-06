@@ -38,7 +38,7 @@ public class Manager {
                     classification = new Classification(i, p, metric);
                     classification.load("keywords_0.5_" + 50);
                     classification.fillRepository();
-                    classification.extractFeatures(whichFeatures4);
+                    classification.extractFeatures(all);
                     classification.normalize();
                     classification.classify();
 
